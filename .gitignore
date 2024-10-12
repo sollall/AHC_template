@@ -2,3 +2,4 @@
 !/in/README.md
 /out/*
 !/out/README.md
+**/__pycache__/**

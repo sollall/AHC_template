@@ -3,8 +3,9 @@ import time
 start=time.time()
 
 try:
+    from pathlib import Path
     import sys
-
+    sys.path.append(str(Path(__file__).resolve().parent.parent))
     from utils.inout import Test_IO
 
     PROB_NO=sys.argv[1]

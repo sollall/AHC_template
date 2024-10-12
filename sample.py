@@ -14,6 +14,6 @@ try:
     origin_print=print
     input=test_io.input
     print=test_io.output
-except KeyboardInterrupt:
+except:
     debug_mode=False
 

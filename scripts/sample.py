@@ -7,14 +7,17 @@ try:
     import sys
 
     sys.path.append(str(Path(__file__).resolve().parent.parent))
-    from utils.inout import Test_IO
+    from utils.inout import replace_io
 
     PROB_NO = sys.argv[1]
     debug_mode = True
-    test_io = Test_IO(PROB_NO)
-
-    origin_print = print
-    input = test_io.input
-    print = test_io.output
-except:
+    replace_io(PROB_NO)
+except ModuleNotFoundError:
     debug_mode = False
+
+def solve():
+    for _ in range(2):
+        print(input())
+
+if __name__ == "__main__":
+    solve()

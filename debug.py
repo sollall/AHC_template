@@ -8,9 +8,7 @@ logging.basicConfig(level=logging.INFO)
 
 def run_dynamic_import(module_name,prob_no):
     try:
-        # モジュールを動的にインポート
         module = importlib.import_module(module_name)
-        # インポートされたモジュールからmain関数を呼び出し
         if hasattr(module, "main"):
             return module.main(prob_no)
         else:

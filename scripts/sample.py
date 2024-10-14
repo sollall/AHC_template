@@ -1,9 +1,7 @@
 import time
 
-start = time.time()
-
-
 def main(prob_id=None):
+    start = time.time()
     try:
         from pathlib import Path
         import sys
@@ -18,7 +16,10 @@ def main(prob_id=None):
     except ModuleNotFoundError:
         debug_mode = False
     
-    solve()
+    score=solve()
+    passed=time.time()-start
+
+    return score, passed
 
 def solve():
     for _ in range(2):

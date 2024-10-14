@@ -24,6 +24,7 @@ def main(prob_id=None):
 def solve():
     for _ in range(2):
         print(input())
+    return 0
 
 if __name__ == "__main__":
     main(0)

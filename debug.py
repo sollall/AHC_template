@@ -1,5 +1,10 @@
 import importlib
 import sys
+import time
+from concurrent.futures import ProcessPoolExecutor
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 def run_dynamic_import(module_name,prob_no):
     try:
@@ -14,11 +19,24 @@ def run_dynamic_import(module_name,prob_no):
         raise Exception(f"Module '{module_name}' not found.")
 
 if __name__ == "__main__":
-    NUM_TESTS=1
+    NUM_TESTS=4
+    MAX_WORKERS=4
+
+    executor_class = ProcessPoolExecutor 
 
     if len(sys.argv) > 1:
         module_name = sys.argv[1]
-        for i in range(NUM_TESTS):
-            run_dynamic_import(module_name,i)
+        start = time.time()
+        with executor_class(max_workers=MAX_WORKERS) as executor:
+            
+            for i in range(NUM_TESTS):
+                future = executor.map(run_dynamic_import,
+                                      [module_name for _ in range(NUM_TESTS)],
+                                      [i for i in range(NUM_TESTS)])
+            
+        end=time.time()
+        logging.info(f"Total time: {end-start:.3f} sec")
+        for res in future:
+            logging.info(f"result: {res}")
     else:
-        print("Please provide a module name as an argument.")
+        raise Exception("Please provide a module name as an argument.")

@@ -1,14 +1,12 @@
 import builtins
 
+origin_print = print
+
 class Test_IO:
     def __init__(self, prob_no):
         self.file_path = f"in/{str(prob_no).zfill(4)}.txt"
-
         self.reader = self._readline()
-
         self.out_path = f"out/{str(prob_no).zfill(4)}.txt"
-
-        self.origin_print=print
 
         with open(self.out_path, "w") as f:
             pass
@@ -24,7 +22,7 @@ class Test_IO:
 
     def output(self, *args):
         with open(self.out_path, "a") as f:
-            self.origin_print(*args, file=f)
+            origin_print(*args, file=f)
 
         return
 

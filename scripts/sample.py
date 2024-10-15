@@ -1,11 +1,17 @@
 import time
 
+def gen_params_for_optuna(experiment):
+    params={
+        "epsiron":experiment.suggest_float("epsiron",0.0,1.0),
+        "cooling_rate":0.1
+        }
+    return params
+
 def main(prob_id=None):
     start = time.time()
     try:
         from pathlib import Path
         import sys
-
         sys.path.append(str(Path(__file__).resolve().parent.parent))
         from utils.inout import replace_io
 
@@ -17,9 +23,9 @@ def main(prob_id=None):
         debug_mode = False
     
     score=solve()
-    passed=time.time()-start
+    passed_time=time.time()-start
 
-    return score, passed
+    return score, passed_time
 
 def solve():
     for _ in range(2):

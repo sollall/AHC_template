@@ -1,12 +1,5 @@
 import time
 
-def gen_params_for_optuna(experiment):
-    params={
-        "epsiron":experiment.suggest_float("epsiron",0.0,1.0),
-        "cooling_rate":0.1
-        }
-    return params
-
 def main(prob_id=None):
     start = time.time()
     try:

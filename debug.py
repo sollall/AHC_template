@@ -3,21 +3,33 @@ import sys
 import time
 from concurrent.futures import ProcessPoolExecutor
 import logging
-import optuna
 import hydra
 import mlflow
 from omegaconf import DictConfig
+from pathlib import Path
+import sys
 
+from utils.inout import replace_io
+
+sys.path.append(str(Path(__file__).resolve().parent.parent))
 logging.basicConfig(level=logging.INFO)
 
 def run_module(module_name:str,params_opt:DictConfig,prob_no):
+    
     module = importlib.import_module(module_name)
-    if hasattr(module, "main"):
+    if hasattr(module, "solve"):
         pass
     else:
-        raise Exception(f"Module '{module_name}' does not have a 'main' function.")
+        raise Exception(f"Module '{module_name}' does not have a 'solve' function.")
+    
+    start=time.time()
+    
+    replace_io(prob_no)
+    
+    score=module.solve(**params_opt)
+    passed_time=time.time()-start
 
-    return module.main(params_opt,prob_id=prob_no)
+    return score,passed_time
 
 @hydra.main(config_path='./conf', config_name='config', version_base="1.3")
 def main(cfg:DictConfig):
@@ -39,7 +51,7 @@ def main(cfg:DictConfig):
             total_score+=score
             total_time+=passed_time
 
-    logging.info(total_score)
+    logging.info(f"{total_score},{passed_time}")
     return total_score
 
 if __name__ == "__main__":

@@ -1,4 +1,7 @@
 import builtins
+from omegaconf import DictConfig
+import importlib
+import time
 
 origin_print = print
 
@@ -32,3 +35,20 @@ def replace_io(prob_no):
     builtins.print = test_io.output
 
     return 
+
+def run_module(module_name:str,params_opt:DictConfig,prob_no):
+    
+    module = importlib.import_module(module_name)
+    if hasattr(module, "solve"):
+        pass
+    else:
+        raise Exception(f"Module '{module_name}' does not have a 'solve' function.")
+    
+    start=time.time()
+    
+    replace_io(prob_no)
+    
+    score=module.solve(**params_opt)
+    passed_time=time.time()-start
+
+    return score,passed_time

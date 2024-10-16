@@ -1,35 +1,14 @@
-import importlib
 import sys
-import time
 from concurrent.futures import ProcessPoolExecutor
 import logging
 import hydra
-import mlflow
 from omegaconf import DictConfig
 from pathlib import Path
-import sys
 
-from utils.inout import replace_io
+from utils.inout import run_module
 
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 logging.basicConfig(level=logging.INFO)
-
-def run_module(module_name:str,params_opt:DictConfig,prob_no):
-    
-    module = importlib.import_module(module_name)
-    if hasattr(module, "solve"):
-        pass
-    else:
-        raise Exception(f"Module '{module_name}' does not have a 'solve' function.")
-    
-    start=time.time()
-    
-    replace_io(prob_no)
-    
-    score=module.solve(**params_opt)
-    passed_time=time.time()-start
-
-    return score,passed_time
 
 @hydra.main(config_path='./conf', config_name='config', version_base="1.3")
 def main(cfg:DictConfig):

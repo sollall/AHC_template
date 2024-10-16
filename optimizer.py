@@ -2,7 +2,6 @@ from concurrent.futures import ProcessPoolExecutor
 import logging
 import hydra
 from omegaconf import DictConfig
-from pathlib import Path
 
 from utils.inout import run_module
 

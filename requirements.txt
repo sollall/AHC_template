@@ -1,2 +1,5 @@
 numpy
 optuna
+mlflow
+hydra-core
+hydra-optuna-sweeper

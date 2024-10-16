@@ -7,6 +7,11 @@
 python debug.py scripts.sample
 ```
 
+- scriptには自作したsolve()を含む必要がある、main()はdebug.pyが使用する用なので基本変更する必要はない
+- scriptごとに適したconfig.yamlをconf内に作成してもらう
+    - cfg.optimizerを自作solverに与える
+
+
 ## 機能
 - 複数のテストケースを自動で並列に実行
 - optunaでのパラメータ最適化

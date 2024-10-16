@@ -6,4 +6,4 @@ def solve(epsilon,cooling_rate,epoch):
     return epoch
 
 if __name__ == "__main__":
-    solve()
+    solve(0.1,0.1,0.1)

@@ -1,4 +1,3 @@
-import sys
 from concurrent.futures import ProcessPoolExecutor
 import logging
 import hydra
@@ -7,7 +6,6 @@ from pathlib import Path
 
 from utils.inout import run_module
 
-sys.path.append(str(Path(__file__).resolve().parent.parent))
 logging.basicConfig(level=logging.INFO)
 
 @hydra.main(config_path='./conf', config_name='config', version_base="1.3")

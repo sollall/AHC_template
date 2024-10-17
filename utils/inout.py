@@ -2,6 +2,8 @@ import builtins
 from omegaconf import DictConfig
 import importlib
 import time
+import argparse
+import re
 
 origin_print = print
 
@@ -52,3 +54,28 @@ def run_module(module_name:str,params_opt:DictConfig,prob_no):
     passed_time=time.time()-start
 
     return score,passed_time
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--module_name', type=str)
+    parser.add_argument('--test_id', type=str)
+
+    return parser.parse_known_args()
+
+def cast_int_or_float(value):
+    if re.fullmatch(r'-?\d+', value):
+        value = int(value)
+    elif re.match(r'-?\d+\.\d+', value):
+        value = float(value)
+
+    return value
+
+def parse_unknown_args(unknowns: list):
+    parser = argparse.ArgumentParser()
+    [parser.add_argument(v) for v in unknowns if v.startswith('--')]
+
+    args = parser.parse_args(unknowns)
+    args = vars(args)
+    args = {k: cast_int_or_float(v) for k, v in args.items()}
+
+    return args

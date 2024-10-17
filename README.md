@@ -4,7 +4,7 @@
 以下のコマンドを参考に、AHC提出用のスクリプトを引数で指定してdebug.pyを実行することで各テストケースを実行することができる。
 
 ``` bash
-python debug.py
+python debug.py --module_name scripts.sample --test_id 0 --epsilon 0.1 cooling_rate 0.1 epoch 100
 ```
 - あるハイパーパラメータを設定して各テストケースでソルバーを実行する
 - 出力ログを残したい場合は上記のコマンドを使用

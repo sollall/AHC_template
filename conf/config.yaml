@@ -14,6 +14,12 @@ general:
     max_workers: 4
     executor_type: ProcessPoolExecutor
 
+mlflow:
+    enabled: true
+    experiment_name: AHC_optimization
+    tracking_uri: ./mlruns
+    log_artifacts: true
+
 hydra:
     sweeper:
       sampler:

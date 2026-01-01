@@ -18,8 +18,13 @@ def main(cfg:DictConfig):
         mlflow.set_experiment(cfg.mlflow.experiment_name)
         mlflow.start_run()
 
-        # Log parameters
-        mlflow.log_params(dict(cfg.optimizer))
+        # Log parameters (extract actual values, not Hydra config strings)
+        for key, value in cfg.optimizer.items():
+            # Skip if value contains Hydra search space syntax
+            if isinstance(value, str) and ('choice(' in value or 'range(' in value or 'interval(' in value):
+                continue
+            mlflow.log_param(f"optimizer.{key}", value)
+
         mlflow.log_param("module_name", cfg.general.module_name)
         mlflow.log_param("num_tests", cfg.general.num_tests)
         mlflow.log_param("max_workers", cfg.general.max_workers)

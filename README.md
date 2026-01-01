@@ -42,20 +42,33 @@ python debug.py --mlflow --module_name scripts.sample --test_id 0 --epsilon 0.1 
 
 複数のテストケースを並列実行し、Optuna でハイパーパラメータを最適化します。
 
+**シングルラン（パラメータ最適化なし）:**
 ```bash
 python optimizer.py
 ```
+デフォルトパラメータで1回だけ実行します。
+
+**マルチラン（Optuna によるパラメータ最適化）:**
+```bash
+python optimizer.py --multirun
+```
+
+**⚠️ IMPORTANT**: Optuna でハイパーパラメータ最適化を行うには、**`--multirun` フラグが必須**です。
 
 **設定のオーバーライド:**
 ```bash
-python optimizer.py general.num_tests=50 hydra.sweeper.n_trials=20
+# テストケース数とトライアル数を変更
+python optimizer.py --multirun general.num_tests=50 hydra.sweeper.n_trials=20
+
+# パラメータ探索範囲を一時的にオーバーライド
+python optimizer.py --multirun hydra.sweeper.params.optimizer.epoch="range(100,300)"
 ```
 
 #### 設定ファイル (`conf/config.yaml`):
-- `optimizer`: 最適化するハイパーパラメータ
-  - `choice(0.1, 0.01, 0.001)`: 離散値から選択
-  - `range(16, 512)`: 整数範囲
-  - `interval(-5.0, 5.0)`: 連続値範囲
+- `optimizer`: ハイパーパラメータのデフォルト値
+  - `epsilon`: 0.1
+  - `cooling_rate`: 0.1
+  - `epoch`: 100
 - `general`: 実行設定
   - `module_name`: ソルバーモジュール
   - `num_tests`: テストケース数
@@ -64,6 +77,10 @@ python optimizer.py general.num_tests=50 hydra.sweeper.n_trials=20
   - `enabled`: MLflow を有効化 (デフォルト: `true`)
   - `experiment_name`: 実験名
   - `tracking_uri`: トラッキングURI
+- `hydra.sweeper.params`: Optuna パラメータ探索範囲（`--multirun`時のみ有効）
+  - `choice(0.1, 0.01, 0.001)`: 離散値から選択
+  - `range(50, 200)`: 整数範囲
+  - `interval(0.05, 0.2)`: 連続値範囲
 
 #### 記録される情報 (MLflow有効時):
 - パラメータ: すべてのハイパーパラメータ、general設定
@@ -142,7 +159,9 @@ def solve(epsilon, cooling_rate, epoch):
 
 ## 留意点
 - ソルバーには `solve(**kwargs)` 関数が必須
-- ハイパーパラメータは `config.yaml` の `optimizer` セクションで定義
+- ハイパーパラメータのデフォルト値は `config.yaml` の `optimizer` セクションで定義
+- Optunaの探索範囲は `config.yaml` の `hydra.sweeper.params` セクションで定義
+- **Optunaで最適化する場合は `--multirun` フラグを必ず指定**
 - テストケースは `in/{test_id:04d}.txt` に配置
 - 出力は `out/{test_id:04d}.txt` に自動保存
 - MLflow を無効化する場合は `config.yaml` で `mlflow.enabled: false` に設定
@@ -157,9 +176,10 @@ def solve(epsilon, cooling_rate, epoch):
 
 ### optimizer.py
 - 複数テストケースの並列実行 (`ProcessPoolExecutor`)
-- Optuna によるハイパーパラメータ最適化 (TPE サンプラー)
+- Optuna によるハイパーパラメータ最適化 (TPE サンプラー、`--multirun`時)
 - スコア統計の自動集計 (平均、標準偏差、最小値、最大値)
 - MLflow による自動実験管理
-  - パラメータとメトリクスの記録
+  - 各トライアルのパラメータとメトリクスを個別に記録
   - Git commit との紐付け
   - 実行履歴の追跡
+  - パラメータとスコアの相関分析が可能

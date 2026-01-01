@@ -25,15 +25,15 @@ if __name__ == "__main__":
     if args.mlflow:
         mlflow.set_tracking_uri(args.tracking_uri)
 
-        # Generate dynamic experiment name: base_name_module_commit
+        # Generate dynamic experiment name: module_commit
         git_hash = get_git_commit_hash()
-        module_name = args.module_name.replace('/', '_').replace('.', '_')
+        # Extract just the module name (e.g., "scripts.sample" -> "sample")
+        module_name = args.module_name.split('.')[-1]
 
-        experiment_name = args.experiment_name
         if git_hash:
-            experiment_name = f"{experiment_name}_{module_name}_{git_hash[:7]}"
+            experiment_name = f"{module_name}_{git_hash[:7]}"
         else:
-            experiment_name = f"{experiment_name}_{module_name}"
+            experiment_name = module_name
 
         mlflow.set_experiment(experiment_name)
         mlflow.start_run()

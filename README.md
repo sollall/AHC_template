@@ -75,7 +75,7 @@ python optimizer.py --multirun hydra.sweeper.params.optimizer.epoch="range(100,3
   - `max_workers`: 並列ワーカー数
 - `mlflow`: MLflow 設定
   - `enabled`: MLflow を有効化 (デフォルト: `true`)
-  - `experiment_name`: 実験名のベース名（実際の実験名は `{base_name}_{module_name}_{commit_hash}` の形式で自動生成されます）
+  - `experiment_name`: 使用されません（実験名は `{module_name}_{commit_hash}` の形式で自動生成されます）
   - `tracking_uri`: トラッキングURI
 - `hydra.sweeper.params`: Optuna パラメータ探索範囲（`--multirun`時のみ有効）
   - `choice(0.1, 0.01, 0.001)`: 離散値から選択
@@ -99,8 +99,8 @@ mlflow ui
 ```
 
 ブラウザで `http://localhost:5000` にアクセスすると、以下が確認できます:
-- 実験の比較（実験名は `{base_name}_{module_name}_{commit_hash}` の形式で自動生成）
-  - 例: `AHC_optimization_scripts_sample_2c484ed`
+- 実験の比較（実験名は `{module_name}_{commit_hash}` の形式で自動生成）
+  - 例: `sample_4983605`
 - パラメータとスコアの相関
 - 実行履歴とメトリクスのグラフ
 - Git commit との紐付け（同じcommitの実験を簡単に見つけられます）

@@ -24,7 +24,18 @@ if __name__ == "__main__":
     # MLflow setup for debug mode
     if args.mlflow:
         mlflow.set_tracking_uri(args.tracking_uri)
-        mlflow.set_experiment(args.experiment_name)
+
+        # Generate dynamic experiment name: base_name_module_commit
+        git_hash = get_git_commit_hash()
+        module_name = args.module_name.replace('/', '_').replace('.', '_')
+
+        experiment_name = args.experiment_name
+        if git_hash:
+            experiment_name = f"{experiment_name}_{module_name}_{git_hash[:7]}"
+        else:
+            experiment_name = f"{experiment_name}_{module_name}"
+
+        mlflow.set_experiment(experiment_name)
         mlflow.start_run()
 
         # Log parameters
@@ -33,7 +44,6 @@ if __name__ == "__main__":
         mlflow.log_param("test_id", args.test_id)
 
         # Log git information as tags
-        git_hash = get_git_commit_hash()
         git_branch = get_git_branch()
         if git_hash:
             mlflow.set_tag("git_commit", git_hash)

@@ -15,7 +15,18 @@ def main(cfg:DictConfig):
     # MLflow setup
     if cfg.mlflow.enabled:
         mlflow.set_tracking_uri(cfg.mlflow.tracking_uri)
-        mlflow.set_experiment(cfg.mlflow.experiment_name)
+
+        # Generate dynamic experiment name: base_name_module_commit
+        git_hash = get_git_commit_hash()
+        module_name = cfg.general.module_name.replace('/', '_').replace('.', '_')
+
+        experiment_name = cfg.mlflow.experiment_name
+        if git_hash:
+            experiment_name = f"{experiment_name}_{module_name}_{git_hash[:7]}"
+        else:
+            experiment_name = f"{experiment_name}_{module_name}"
+
+        mlflow.set_experiment(experiment_name)
         mlflow.start_run()
 
         # Log parameters (extract actual values, not Hydra config strings)
@@ -30,7 +41,6 @@ def main(cfg:DictConfig):
         mlflow.log_param("max_workers", cfg.general.max_workers)
 
         # Log git information as tags
-        git_hash = get_git_commit_hash()
         git_branch = get_git_branch()
         if git_hash:
             mlflow.set_tag("git_commit", git_hash)

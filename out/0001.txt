@@ -1,3 +1,2 @@
-epsilon=0.11346596901866915, cooling_rate=0.1, epoch=109
 Test input line 1 for case 1
 Test input line 2 for case 1

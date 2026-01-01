@@ -4,6 +4,7 @@ import importlib
 import time
 import argparse
 import re
+import subprocess
 
 origin_print = print
 
@@ -79,3 +80,33 @@ def parse_unknown_args(unknowns: list):
     args = {k: cast_int_or_float(v) for k, v in args.items()}
 
     return args
+
+def get_git_commit_hash():
+    """Get current git commit hash"""
+    try:
+        result = subprocess.run(
+            ['git', 'rev-parse', 'HEAD'],
+            capture_output=True,
+            text=True,
+            timeout=5
+        )
+        if result.returncode == 0:
+            return result.stdout.strip()
+    except Exception:
+        pass
+    return None
+
+def get_git_branch():
+    """Get current git branch name"""
+    try:
+        result = subprocess.run(
+            ['git', 'rev-parse', '--abbrev-ref', 'HEAD'],
+            capture_output=True,
+            text=True,
+            timeout=5
+        )
+        if result.returncode == 0:
+            return result.stdout.strip()
+    except Exception:
+        pass
+    return None
